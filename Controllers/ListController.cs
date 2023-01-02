@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using InterviewTest.Model;
 using InterviewTest.Repository;
@@ -11,16 +12,17 @@ namespace InterviewTest.Controllers
     [Route("[controller]")]
     public class ListController : ControllerBase
     {
-        private readonly EmployeeRepository _repository;
+        private readonly IRepository<Employee> _repository;
         private readonly ILogger<ListController> _logger;
         
-        public ListController(EmployeeRepository employeeRepository, ILogger<ListController> logger)
+        public ListController(IRepository<Employee> employeeRepository, ILogger<ListController> logger)
         {
             _repository = employeeRepository;
             _logger = logger;
         }
 
         [HttpGet]
+        [Route("/Increment")]
         [Produces("application/json")]
         public IActionResult Increment()
         {
@@ -41,6 +43,7 @@ namespace InterviewTest.Controllers
         }
         
         [HttpGet]
+        [Route("/SumOfValuesList")]
         [Produces("application/json")]
         public IActionResult SumOfValuesList()
         {
@@ -59,15 +62,16 @@ namespace InterviewTest.Controllers
             Console.WriteLine($"ABC sum = {abcSum}");
             
             //But only present the data where the summed values are greater than or equal to 11171
-            var employeesToReturn = employeesToSum.Select((e, index) => new
-                                                  {
-                                                      e,
-                                                      index
-                                                  })
-                                                  .Where(pair => employeesToSum
-                                                                 .Take(pair.index + 1)
-                                                                 .Sum(employee => employee.Value) >= 11171)
-                                                  .Select(pair => pair.e).ToList();
+            var sum = 0;
+            List<Employee> employeesToReturn = new List<Employee>();
+
+            foreach (var employee in employeesToSum)
+            {
+                if (sum >= 11171)
+                    employeesToReturn.Add(employee);
+                else
+                    sum += employee.Value;
+            }
             
             return new JsonResult(employeesToReturn);
         }

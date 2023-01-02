@@ -11,4 +11,6 @@ public interface IRepository<T>
     List<T> Update(List<T> items);
 
     bool Delete(List<int> ids);
+
+    bool Delete(List<string> names);
 }

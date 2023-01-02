@@ -7,11 +7,11 @@ using Microsoft.Extensions.Logging;
 
 namespace InterviewTest.Repository;
 
-public abstract class EmployeeRepository : BaseRepository<Employee>
+public class EmployeeRepository : BaseRepository<Employee>
 {
     private readonly ILogger<EmployeeRepository> _logger;
 
-    protected EmployeeRepository(ILogger<EmployeeRepository> logger) => _logger = logger;
+    public EmployeeRepository(ILogger<EmployeeRepository> logger) => _logger = logger;
 
     public override List<Employee> Get()
     {
@@ -59,16 +59,15 @@ public abstract class EmployeeRepository : BaseRepository<Employee>
             {
                 try 
                 { 
-                    var insertCmd = connection.CreateCommand();
-                    insertCmd.CommandText = @"INSERT INTO Employees (Name, Value) VALUES ($name, $value)";
-                
                     foreach (var employee in employees)
                     {
+                        var insertCmd = connection.CreateCommand();
+                        insertCmd.CommandText = @"INSERT INTO Employees (Name, Value) VALUES ($name, $value)";
                         insertCmd.Parameters.AddWithValue("$name", employee.Name);
                         insertCmd.Parameters.AddWithValue("$value", employee.Value);
+                        insertCmd.ExecuteNonQuery();
                     }
                         
-                    insertCmd.ExecuteNonQuery();
                     transaction.Commit();
                 }
                 catch (Exception exception)
@@ -95,16 +94,15 @@ public abstract class EmployeeRepository : BaseRepository<Employee>
             {
                 try 
                 { 
-                    var updateCmd = connection.CreateCommand();
-                    updateCmd.CommandText = @"UPDATE Employees SET Value = $value WHERE Name = $name";
-                
                     foreach (var employee in employees)
                     {
+                        var updateCmd = connection.CreateCommand();
+                        updateCmd.CommandText = @"UPDATE Employees SET Value = $value WHERE Name = $name";
                         updateCmd.Parameters.AddWithValue("$name", employee.Name);
                         updateCmd.Parameters.AddWithValue("$value", employee.Value);
+                        updateCmd.ExecuteNonQuery();
                     }
-                        
-                    updateCmd.ExecuteNonQuery();
+                    
                     transaction.Commit();
                 }
                 catch (Exception exception)
@@ -134,13 +132,14 @@ public abstract class EmployeeRepository : BaseRepository<Employee>
             {
                 try 
                 { 
-                    var deleteCmd = connection.CreateCommand();
-                    deleteCmd.CommandText = @"DELETE FROM Employees WHERE Name = $name";
-                
                     foreach (var employeeName in employeeNames)
+                    {
+                        var deleteCmd = connection.CreateCommand();
+                        deleteCmd.CommandText = @"DELETE FROM Employees WHERE Name = $name";
                         deleteCmd.Parameters.AddWithValue("$name", employeeName);
+                        deleteCmd.ExecuteNonQuery();
+                    }
 
-                    deleteCmd.ExecuteNonQuery();
                     transaction.Commit();
                 }
                 catch (Exception exception)

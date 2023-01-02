@@ -12,16 +12,17 @@ namespace InterviewTest.Controllers
     [Route("[controller]")]
     public class EmployeesController : ControllerBase
     {
-        private readonly EmployeeRepository _repository;
+        private readonly IRepository<Employee> _repository;
         private readonly ILogger<EmployeesController> _logger;
         
-        public EmployeesController(EmployeeRepository employeeRepository, ILogger<EmployeesController> logger)
+        public EmployeesController(IRepository<Employee> employeeRepository, ILogger<EmployeesController> logger)
         {
             _repository = employeeRepository;
             _logger = logger;
         }
         
         [HttpGet]
+        [Route("/Get")]
         [Produces("application/json")]
         public IActionResult Get()
         {
@@ -30,6 +31,7 @@ namespace InterviewTest.Controllers
         }
         
         [HttpPost]
+        [Route("/Add")]
         public IActionResult Add(List<Employee> employees)
         {
             if (employees == null || !employees.Any())
@@ -43,6 +45,7 @@ namespace InterviewTest.Controllers
         }
         
         [HttpPut]
+        [Route("/Update")]
         public IActionResult Update(List<Employee> employees)
         {
             if (employees == null || !employees.Any())
@@ -56,6 +59,7 @@ namespace InterviewTest.Controllers
         }
         
         [HttpDelete]
+        [Route("/Delete")]
         public IActionResult Delete(List<string> employeeNames)
         {
             if (employeeNames == null || !employeeNames.Any())

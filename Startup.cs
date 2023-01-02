@@ -1,3 +1,6 @@
+using InterviewTest.Controllers;
+using InterviewTest.Model;
+using InterviewTest.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -5,6 +8,8 @@ using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace InterviewTest
 {
@@ -23,11 +28,23 @@ namespace InterviewTest
         {
             services.AddControllersWithViews();
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Interview Test API", 
+                    Version = "v1"
+                });                
+            });
+
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
             });
+            
+            services.AddLogging();
+            services.AddSingleton<IRepository<Employee>, EmployeeRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,6 +53,11 @@ namespace InterviewTest
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Interview Test API V1");
+                });
             }
 
             app.UseStaticFiles();
@@ -64,6 +86,7 @@ namespace InterviewTest
         private void PrepareDB()
         {
             var connectionStringBuilder = new SqliteConnectionStringBuilder() { DataSource = "./SqliteDB.db" };
+            
             using (var connection = new SqliteConnection(connectionStringBuilder.ConnectionString))
             {
                 connection.Open();

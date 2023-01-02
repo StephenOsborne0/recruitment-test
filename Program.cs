@@ -13,6 +13,8 @@ namespace InterviewTest
     {
         public static void Main(string[] args)
         {
+            var builder = CreateHostBuilder(args);
+            
             CreateHostBuilder(args).Build().Run();
         }
 
