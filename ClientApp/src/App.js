@@ -5,6 +5,8 @@ import { fetchEmployees } from "./Components/EmployeeList/actions";
 
 const App = () => {
     
+    //Note: this should all probably be in a page, or a component.
+    
     const [employees, setEmployees] = useState(null);
     const [summedEmployees, setSummedEmployees] = useState(null);
     const [tabIndex, setTabIndex] = useState(0);
