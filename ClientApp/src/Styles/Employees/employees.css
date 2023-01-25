@@ -1,0 +1,8 @@
+﻿.employee-list-header {
+    margin-top: 30px !important;
+    margin-bottom: 30px;
+}
+
+.employee-list .increment-button {
+    float:right;
+}
