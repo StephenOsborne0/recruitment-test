@@ -37,10 +37,10 @@ namespace InterviewTest.Controllers
             if (employees == null || !employees.Any())
                 return new ContentResult
                 {
-                    Content = "Invalid employee list supplied", 
-                    StatusCode = StatusCodes.Status400BadRequest 
+                    Content = "Invalid employee list supplied",
+                    StatusCode = StatusCodes.Status400BadRequest
                 };
-            
+
             return _repository.Add(employees) ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
         }
         
